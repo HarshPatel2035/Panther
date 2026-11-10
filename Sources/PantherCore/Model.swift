@@ -124,7 +124,9 @@ public struct Environment: Codable, Equatable, Sendable {
 
 /// Fixed safety limits. Raising the cap is allowed; removing it is not.
 public struct Limits: Codable, Equatable, Sendable {
-    public static let absoluteMaxHold: TimeInterval = 24 * 3600
+    /// Hard ceiling no configuration can exceed. Long sessions stay safe because the battery and
+    /// heat rules keep running the whole time.
+    public static let absoluteMaxHold: TimeInterval = 7 * 86_400
     public static let minimumBatteryFloor = 5
 
     public let maxHold: TimeInterval
@@ -134,7 +136,7 @@ public struct Limits: Codable, Equatable, Sendable {
     /// During a session on battery, Low Power Mode also turns on below this, lid open or not.
     public let lowPowerBelowPercent: Int
 
-    public init(maxHold: TimeInterval = 12 * 3600, defaultRunCap: TimeInterval = 8 * 3600,
+    public init(maxHold: TimeInterval = 3 * 86_400, defaultRunCap: TimeInterval = 8 * 3600,
                 batteryFloorPercent: Int = 10, bagHeatGrace: TimeInterval = 10 * 60,
                 lowPowerBelowPercent: Int = 30) {
         self.lowPowerBelowPercent = min(max(lowPowerBelowPercent, 0), 100)

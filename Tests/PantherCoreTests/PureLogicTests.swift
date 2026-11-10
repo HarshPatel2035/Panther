@@ -75,6 +75,9 @@ struct SafetyPolicyTests {
     func limitsClamp() {
         let limits = Limits(maxHold: 1_000_000, defaultRunCap: 999_999, batteryFloorPercent: 0, bagHeatGrace: 0)
         #expect(limits.maxHold == Limits.absoluteMaxHold)
+        #expect(Limits.absoluteMaxHold == 7 * 86_400)
+        #expect(Limits.standard.maxHold == 3 * 86_400)
+        #expect(Limits.standard.defaultRunCap == 8 * 3_600)
         #expect(limits.batteryFloorPercent == Limits.minimumBatteryFloor)
         #expect(limits.bagHeatGrace == 60)
         #expect(limits.defaultRunCap <= limits.maxHold)

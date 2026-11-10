@@ -103,11 +103,13 @@ struct HoldControllerLifecycleTests {
 @MainActor
 @Suite("Hold controller: requests and limits")
 struct HoldControllerRequestTests {
-    @Test("Timed sessions must be between 1 minute and the max")
-    func timedLimits() {
+    @Test("Timed sessions must be between 1 minute and the max (3 days)")
+    func timedLimits() throws {
         let w = World()
         #expect(throws: PantherError.self) { try w.controller.start(.timed(duration: 30, label: "t")) }
-        #expect(throws: PantherError.self) { try w.controller.start(.timed(duration: 13 * 3_600, label: "t")) }
+        #expect(throws: PantherError.self) { try w.controller.start(.timed(duration: 4 * 86_400, label: "t")) }
+        let twoDays = try w.controller.start(.timed(duration: 2 * 86_400, label: "2 days"))
+        #expect(twoDays.endsAt.timeIntervalSince(twoDays.startedAt) == 2 * 86_400)
     }
 
     @Test("A process hold needs a running process and defaults to the run cap")
@@ -127,7 +129,7 @@ struct HoldControllerRequestTests {
         let hold = try w.controller.start(.timed(duration: 3_600, label: "t"))
         let longer = try w.controller.extend(id: nil, by: 1_800)
         #expect(longer.endsAt == hold.endsAt.addingTimeInterval(1_800))
-        #expect(throws: PantherError.self) { try w.controller.extend(id: nil, by: 12 * 3_600) }
+        #expect(throws: PantherError.self) { try w.controller.extend(id: nil, by: 3 * 86_400) }
     }
 
     @Test("Starting is refused while the battery is below the floor")

@@ -23,10 +23,26 @@ public struct PanelView: View {
         }
         .padding(16)
         .frame(width: 310)
+        .fixedSize(horizontal: false, vertical: true)
+        // Pinned to the top and filling the window, so there's never a gap under the menu bar.
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(Theme.background)
         .foregroundStyle(.white)
         .environment(\.colorScheme, .dark)
+        .focusEffectDisabled()   // no blue focus ring on the first button
+        .background(WindowFitter(token: layoutToken))
         .onAppear { model.refresh() }
+    }
+
+    /// Changes whenever the panel's height can change, so the window is refitted.
+    private var layoutToken: Int {
+        var hasher = Hasher()
+        hasher.combine(model.isActive)
+        hasher.combine(model.holds.count)
+        hasher.combine(model.isCountingDown)
+        hasher.combine(problem)
+        hasher.combine(model.status == nil)
+        return hasher.finalize()
     }
 
     private var header: some View {
@@ -138,12 +154,14 @@ private struct StartCard: View {
                 .foregroundStyle(Theme.secondaryText)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
                 ForEach(presets, id: \.1) { preset in
-                    ChipButton(title: preset.0, prominent: !model.isActive && preset.1 == 3_600) {
+                    ChipButton(title: preset.0) {
                         model.start(for: preset.1)
                     }
                 }
                 AppPicker(model: model)
             }
+            Divider().overlay(Color.white.opacity(0.06))
+            CustomDurationRow(model: model)
         }
     }
 }

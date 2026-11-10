@@ -39,7 +39,7 @@ Panther is built around handling that one switch safely.
 ## Features
 
 - **Keep awake until a program finishes**: `panther run -- python train.py`. When it exits, sleep comes back.
-- **Timed sessions** from the menu bar or the CLI: 30 min to 8 h, extend any time.
+- **Timed sessions** from the menu bar or the CLI: presets from 30 min to 8 h, or **any custom length up to 3 days** (days · hours · minutes), extend any time.
 - **"Until an app quits"**: pick a running app from the panel.
 - **Live countdown in the menu bar** (`1:23:45`) at about 0.5% of one CPU core while ticking, and zero when idle.
 - **Hold for 2 seconds to end**, so you can't end a long job by accident.
@@ -126,6 +126,7 @@ It refuses to remove anything while sleep is still disabled.
 **Menu bar:** click the paw print.
 
 - Presets: 30m · 1h · 2h · 4h · 8h, or **App…** to stay awake until an app quits
+- **Custom**: set days, hours and minutes (up to 3 days); the button tells you when it will end
 - **+30m / +1h / +2h** while a session runs
 - **Hold to end** (2 seconds)
 - Open at login · log · quit (sessions keep running)
@@ -135,7 +136,7 @@ It refuses to remove anything while sleep is still disabled.
 ```bash
 panther run -- python train.py        # awake until it exits (at most 8 h)
 panther run --max 3h -- ./build.sh    # with your own cap
-panther start 2h                      # timed
+panther start 2h                      # timed (also 90m, 1h30m, 2d)
 panther extend 30m
 panther status                        # or: panther status --json
 panther end
@@ -148,7 +149,7 @@ panther doctor                        # checks it really works, not just that it
 
 | Rule | Default | Can you turn it off? |
 |---|---|---|
-| Longest session | 12 h (`run` defaults to 8 h) | raise it up to 24 h, never unlimited |
+| Longest session | 3 days (`run` defaults to 8 h; use `--max 2d` for longer) | raise it up to 7 days, never unlimited |
 | Battery floor (on battery) | ends at 10% | raise or lower, never below 5% |
 | Critical heat | ends and sleeps immediately | no |
 | Heavy heat for 10 min, lid closed, no display | ends and sleeps ("in a bag?") | no |
@@ -182,7 +183,7 @@ Full write-ups:
 
 ## Security model and known limits
 
-- Any program on the Mac can run `/usr/local/bin/panther`, just as it could run `caffeinate`. It can start sessions, but only within the caps (12 h each, 16 at most) and the safety rules. It can't touch sleep settings directly.
+- Any program on the Mac can run `/usr/local/bin/panther`, just as it could run `caffeinate`. It can start sessions, but only within the caps (3 days each, 16 at most) and the safety rules. It can't touch sleep settings directly.
 - Sessions belong to the user who started them. You can only extend or end your own (root can do all), and `run` can only be tied to your own processes.
 - The CLI and the app tell the daemon whether an external display is in use, because a root daemon has no WindowServer connection. The daemon trusts that for 2 minutes, then assumes "no display", which is the safe side.
 - Session labels are just the program name, because full command lines can hold secrets and the log is readable by every account on the Mac.

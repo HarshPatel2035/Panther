@@ -18,6 +18,7 @@ public final class AppModel {
 
     let loginItem = LoginItem()
     let holdToEnd = HoldToEndState()
+    let custom = CustomDuration()
     let lights = LidLights()
     private var lid: LidSensor?
     private(set) var lidClosed = false

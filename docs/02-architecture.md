@@ -189,7 +189,7 @@ Same principle as Insomnia (write-ahead), much less state:
 
 | Rule | Default | Can turn off? |
 |---|---|---|
-| Max session length | 12 h (`run` default cap 8 h) | raise only, never infinite |
+| Max session length | 3 days (`run` default cap 8 h); hard ceiling 7 days (raised from 12 h on 2026-11-10) | raise only, never infinite |
 | Battery floor, on battery | end at 10% | yes, but min 5% |
 | Low Power Mode | on below 30% while lid closed | yes |
 | Critical heat (`thermalState == .critical`) | end + sleep immediately | **no** |

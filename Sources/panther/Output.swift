@@ -2,7 +2,11 @@ import Foundation
 import PantherCore
 
 enum Output {
-    static func time(_ date: Date) -> String { date.formatted(date: .omitted, time: .shortened) }
+    /// "5:45 PM" for today; "Thu 5:45 PM" otherwise (sessions can last days).
+    static func time(_ date: Date, now: Date = Date()) -> String {
+        if Calendar.current.isDate(date, inSameDayAs: now) { return date.formatted(date: .omitted, time: .shortened) }
+        return date.formatted(.dateTime.weekday(.abbreviated).hour().minute())
+    }
 
     static func describe(_ hold: Hold, now: Date) -> String {
         let remaining = Durations.format(hold.endsAt.timeIntervalSince(now))
